@@ -28,10 +28,9 @@ async def read_todo(todo_id: str):
     return todo
 
 
-@router.delete("/{todo_id}")
+@router.delete("/{todo_id}", status_code=204)
 async def delete_todo(todo_id: str):
     todo = await todo_service.read_todo(todo_id)
     if todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
-
-    return await todo_service.delete_todo(todo_id)
+    await todo_service.delete_todo(todo_id)
