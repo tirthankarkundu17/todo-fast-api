@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  fast-api
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 128
+
+Resources:
+  ProxyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      BinaryMediaTypes: [ '*/*' ]
+
+  HandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.handler
+      Runtime: python3.8
+      Architectures:
+        - arm64
+      Events:
+        FunctionProxy:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ProxyApi
+            Path: "/{proxy+}"
+            Method: ANY
+
+Outputs:
+  HandlerFunctionApi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ProxyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  HandlerFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt HandlerFunction.Arn
+  HandlerFunctionIamRole:
+    Description: "Implicit IAM Role created"
+    Value: !GetAtt HandlerFunction.Arn

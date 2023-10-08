@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "fast-api"
+s3_bucket = "fast-api-deployment"
+s3_prefix = "fast-api"
+region = "us-east-1"
+fail_on_empty_changeset=false
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
